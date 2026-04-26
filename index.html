@@ -1,0 +1,1307 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>通信互联解决方案 - 连通城市智慧体</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#EEF4FF",
+                100: "#DCE8FF",
+                200: "#B9D1FF",
+                300: "#85AEFF",
+                400: "#4F86FF",
+                500: "#0055FF",
+                600: "#0047D6",
+                700: "#003AAE",
+                800: "#002D86",
+                900: "#001F5D"
+              }
+            },
+            boxShadow: {
+              soft: "0 10px 30px rgba(0,0,0,0.06)",
+              soft2: "0 18px 60px rgba(0,0,0,0.10)"
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial,
+          sans-serif;
+        text-rendering: geometricPrecision;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      .bg-grid {
+        background-image: linear-gradient(
+            rgba(255, 255, 255, 0.08) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: 44px 44px;
+      }
+      .noise {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+        mix-blend-mode: overlay;
+        opacity: 0.12;
+      }
+      @keyframes breathe {
+        0% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 0.8;
+        }
+        60% {
+          transform: translate(-50%, -50%) scale(1.35);
+          opacity: 0.22;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1.55);
+          opacity: 0;
+        }
+      }
+      .pulse::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 22px;
+        height: 22px;
+        border-radius: 999px;
+        background: rgba(0, 85, 255, 0.35);
+        animation: breathe 1.8s ease-out infinite;
+      }
+      .reveal {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      .reveal.is-in {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 700ms ease, transform 700ms ease;
+      }
+    </style>
+  </head>
+  <body class="bg-white text-zinc-900">
+    <div
+      class="fixed inset-x-0 top-0 z-50 h-[3px] bg-gradient-to-r from-primary-700 via-primary-500 to-cyan-400"
+    ></div>
+    <header class="sticky top-0 z-40 bg-white/85 backdrop-blur-xl">
+      <div class="mx-auto max-w-6xl px-5">
+        <div class="flex h-[72px] items-center justify-between">
+          <a
+            href="#"
+            class="group inline-flex items-center gap-2 font-semibold tracking-wide"
+          >
+            <span
+              class="grid h-9 w-9 place-items-center rounded-lg bg-primary-500 text-white shadow-soft"
+              aria-hidden="true"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2 9C2 5.13401 5.13401 2 9 2C12.866 2 16 5.13401 16 9C16 12.866 12.866 16 9 16C5.13401 16 2 12.866 2 9Z"
+                  stroke="white"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M5 10.5C6.2 8.6 7.6 7.5 9.2 7.2C10.8 6.9 12.1 7.6 13 9.3"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M5.8 6.2L7.4 6.8"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M12.2 11.8L10.6 11.2"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+            <span class="text-[15px] text-zinc-900">
+              智慧互联<span class="text-primary-600">·</span>通信云
+            </span>
+          </a>
+          <nav class="hidden items-center gap-7 text-[13px] text-zinc-600 md:flex">
+            <a class="transition hover:text-zinc-900" href="#solution">解决方案</a>
+            <a class="transition hover:text-zinc-900" href="#features">核心能力</a>
+            <a class="transition hover:text-zinc-900" href="#architecture">架构图</a>
+            <a class="transition hover:text-zinc-900" href="#news">新闻资讯</a>
+            <a class="transition hover:text-zinc-900" href="#contact">联系我们</a>
+          </nav>
+          <div class="flex items-center gap-3">
+            <a
+              href="#contact"
+              class="hidden rounded-full bg-zinc-900 px-4 py-2 text-[13px] font-medium text-white shadow-soft transition hover:bg-zinc-800 md:inline-flex"
+              >预约演示</a
+            >
+            <button
+              type="button"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-700 shadow-[0_1px_0_rgba(0,0,0,0.06)] transition hover:bg-zinc-50 md:hidden"
+              data-menu
+              aria-label="打开菜单"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M3 5H15"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M3 9H15"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M3 13H15"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div
+          class="hidden border-t border-zinc-200 pb-4 pt-4 md:hidden"
+          data-menu-panel
+        >
+          <div class="grid gap-2 text-[13px] text-zinc-700">
+            <a class="rounded-lg px-3 py-2 hover:bg-zinc-50" href="#solution"
+              >解决方案</a
+            >
+            <a class="rounded-lg px-3 py-2 hover:bg-zinc-50" href="#features"
+              >核心能力</a
+            >
+            <a class="rounded-lg px-3 py-2 hover:bg-zinc-50" href="#architecture"
+              >架构图</a
+            >
+            <a class="rounded-lg px-3 py-2 hover:bg-zinc-50" href="#news"
+              >新闻资讯</a
+            >
+            <a class="rounded-lg px-3 py-2 hover:bg-zinc-50" href="#contact"
+              >联系我们</a
+            >
+          </div>
+        </div>
+      </div>
+      <div class="h-px bg-gradient-to-r from-transparent via-zinc-200 to-transparent"></div>
+    </header>
+
+    <main>
+      <section id="solution" class="relative overflow-hidden">
+        <div class="absolute inset-0 bg-zinc-950"></div>
+        <div
+          class="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(0,85,255,0.50),transparent_42%),radial-gradient(circle_at_70%_22%,rgba(34,211,238,0.30),transparent_44%),radial-gradient(circle_at_70%_78%,rgba(0,85,255,0.22),transparent_48%)]"
+        ></div>
+        <div class="absolute inset-0 bg-grid opacity-35"></div>
+        <div class="absolute inset-0 noise"></div>
+
+        <div class="relative mx-auto max-w-6xl px-5 pb-16 pt-16 sm:pt-20">
+          <div
+            class="reveal mx-auto max-w-2xl text-center text-white"
+            data-reveal
+          >
+            <div
+              class="mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[12px] text-white/80 backdrop-blur"
+            >
+              <span class="h-1.5 w-1.5 rounded-full bg-cyan-300"></span>
+              <span>城市级通信互联 · 架构可扩展 · 工业级可靠</span>
+            </div>
+            <h1
+              class="mt-6 text-balance text-[44px] font-bold leading-[1.05] tracking-[-0.02em] sm:text-[56px]"
+            >
+              连通城市智慧体
+            </h1>
+            <p class="mt-5 text-[15px] leading-7 text-white/75 sm:text-[16px]">
+              通信互联解决方案，面向城域专网、园区工业与关键基础设施，构建稳定、低时延与可观测的连接底座。
+            </p>
+            <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <a
+                href="#contact"
+                class="inline-flex items-center justify-center rounded-full border border-white/40 bg-white/10 px-6 py-3 text-[13px] font-medium text-white shadow-soft transition hover:bg-white/15"
+                >获取方案</a
+              >
+              <a
+                href="#architecture"
+                class="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-[13px] font-semibold text-primary-700 shadow-soft transition hover:bg-white/90"
+              >
+                查看架构
+              </a>
+            </div>
+          </div>
+
+          <div class="mt-12 grid items-center gap-10 lg:mt-14 lg:grid-cols-[1fr_1.05fr]">
+            <div class="reveal" data-reveal>
+              <div
+                class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-soft2 backdrop-blur-xl"
+              >
+                <div class="flex items-start justify-between gap-6">
+                  <div>
+                    <p class="text-[12px] text-white/60">实时态势</p>
+                    <p class="mt-1 text-[18px] font-semibold text-white">
+                      城市级连接可观测
+                    </p>
+                  </div>
+                  <div
+                    class="grid place-items-center rounded-2xl bg-white/10 px-3 py-2 text-[11px] text-white/70"
+                  >
+                    SLA 99.99%
+                  </div>
+                </div>
+                <div class="mt-6 grid grid-cols-3 gap-3">
+                  <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p class="text-[11px] text-white/60">链路时延</p>
+                    <p class="mt-2 text-[18px] font-semibold text-white">
+                      8.6<span class="text-[12px] font-medium text-white/70"
+                        >ms</span
+                      >
+                    </p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p class="text-[11px] text-white/60">边缘节点</p>
+                    <p class="mt-2 text-[18px] font-semibold text-white">
+                      126<span class="text-[12px] font-medium text-white/70"
+                        >个</span
+                      >
+                    </p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p class="text-[11px] text-white/60">告警闭环</p>
+                    <p class="mt-2 text-[18px] font-semibold text-white">
+                      3.2<span class="text-[12px] font-medium text-white/70"
+                        >min</span
+                      >
+                    </p>
+                  </div>
+                </div>
+                <div class="mt-6 h-[120px] overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+                  <svg
+                    class="h-full w-full"
+                    viewBox="0 0 680 160"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M0 112C60 112 78 52 130 52C182 52 202 128 254 128C306 128 322 40 380 40C438 40 456 96 506 96C556 96 574 66 640 66"
+                      stroke="rgba(34,211,238,0.75)"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M0 126C52 126 82 82 130 82C178 82 202 148 254 148C306 148 328 64 382 64C436 64 456 126 506 126C556 126 574 96 640 96"
+                      stroke="rgba(0,85,255,0.6)"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                    <g opacity="0.75">
+                      <circle cx="130" cy="52" r="4" fill="white" />
+                      <circle cx="380" cy="40" r="4" fill="white" />
+                      <circle cx="506" cy="96" r="4" fill="white" />
+                      <circle cx="254" cy="128" r="4" fill="white" />
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="reveal" data-reveal>
+              <div
+                class="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-soft2"
+              >
+                <div
+                  class="pointer-events-none absolute -left-16 -top-24 h-64 w-64 rounded-full bg-primary-500/25 blur-3xl"
+                ></div>
+                <div
+                  class="pointer-events-none absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-cyan-400/15 blur-3xl"
+                ></div>
+                <div class="relative p-7 sm:p-9">
+                  <p class="text-[12px] text-white/60">能力覆盖</p>
+                  <p class="mt-1 text-[20px] font-semibold text-white">
+                    专网 · 微波 · 光纤 · 卫星多链路协同
+                  </p>
+                  <p class="mt-4 text-[13px] leading-7 text-white/70">
+                    统一编排、统一安全、统一运维。通过链路聚合与智能路由，实现关键业务“不断链”、可回溯、可验证。
+                  </p>
+
+                  <div class="mt-8 grid gap-3 sm:grid-cols-2">
+                    <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                      <div class="flex items-center gap-3">
+                        <span
+                          class="grid h-9 w-9 place-items-center rounded-xl bg-white/10"
+                          aria-hidden="true"
+                        >
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 18 18"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M4 13.5V4.5C4 3.39543 4.89543 2.5 6 2.5H12C13.1046 2.5 14 3.39543 14 4.5V13.5"
+                              stroke="rgba(255,255,255,0.9)"
+                              stroke-width="1.4"
+                            />
+                            <path
+                              d="M6.25 6.25H11.75"
+                              stroke="rgba(34,211,238,0.95)"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                            />
+                            <path
+                              d="M6.25 9H11.75"
+                              stroke="rgba(34,211,238,0.95)"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                            />
+                          </svg>
+                        </span>
+                        <p class="text-[14px] font-semibold text-white">
+                          统一编排
+                        </p>
+                      </div>
+                      <p class="mt-3 text-[12px] leading-6 text-white/70">
+                        城域与园区多域接入，策略一致、能力可叠加。
+                      </p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                      <div class="flex items-center gap-3">
+                        <span
+                          class="grid h-9 w-9 place-items-center rounded-xl bg-white/10"
+                          aria-hidden="true"
+                        >
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 18 18"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M9 2.5L14.5 5.8V12.2L9 15.5L3.5 12.2V5.8L9 2.5Z"
+                              stroke="rgba(255,255,255,0.9)"
+                              stroke-width="1.4"
+                            />
+                            <path
+                              d="M9 7V11"
+                              stroke="rgba(0,85,255,0.95)"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                            />
+                            <path
+                              d="M7 9H11"
+                              stroke="rgba(0,85,255,0.95)"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                            />
+                          </svg>
+                        </span>
+                        <p class="text-[14px] font-semibold text-white">
+                          零信任安全
+                        </p>
+                      </div>
+                      <p class="mt-3 text-[12px] leading-6 text-white/70">
+                        端到端加密与细粒度访问控制，满足监管合规。
+                      </p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                      <div class="flex items-center gap-3">
+                        <span
+                          class="grid h-9 w-9 place-items-center rounded-xl bg-white/10"
+                          aria-hidden="true"
+                        >
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 18 18"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M3.5 12.5C5 9.5 6.7 7.8 8.6 7.2C10.5 6.6 12.2 7.3 13.8 9.2"
+                              stroke="rgba(255,255,255,0.9)"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                            />
+                            <path
+                              d="M5.5 5.2L7.4 5.9"
+                              stroke="rgba(34,211,238,0.95)"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                            />
+                            <path
+                              d="M12.5 12.8L10.6 12.1"
+                              stroke="rgba(34,211,238,0.95)"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                            />
+                          </svg>
+                        </span>
+                        <p class="text-[14px] font-semibold text-white">
+                          智能路由
+                        </p>
+                      </div>
+                      <p class="mt-3 text-[12px] leading-6 text-white/70">
+                        多链路负载与容灾切换，业务时延与抖动可控。
+                      </p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                      <div class="flex items-center gap-3">
+                        <span
+                          class="grid h-9 w-9 place-items-center rounded-xl bg-white/10"
+                          aria-hidden="true"
+                        >
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 18 18"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M4 14V8.8C4 7.7 4.9 6.8 6 6.8H12C13.1 6.8 14 7.7 14 8.8V14"
+                              stroke="rgba(255,255,255,0.9)"
+                              stroke-width="1.4"
+                            />
+                            <path
+                              d="M6 6.7V5.1C6 4.0 6.9 3.1 8 3.1H10C11.1 3.1 12 4.0 12 5.1V6.7"
+                              stroke="rgba(0,85,255,0.95)"
+                              stroke-width="1.4"
+                            />
+                            <path
+                              d="M6.2 11H11.8"
+                              stroke="rgba(34,211,238,0.95)"
+                              stroke-width="1.4"
+                              stroke-linecap="round"
+                            />
+                          </svg>
+                        </span>
+                        <p class="text-[14px] font-semibold text-white">
+                          工业平台对接
+                        </p>
+                      </div>
+                      <p class="mt-3 text-[12px] leading-6 text-white/70">
+                        标准化 API 与数据面治理，快速融入既有系统。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-14 sm:mt-16">
+            <div
+              class="mx-auto max-w-6xl rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-[11px] text-white/70 shadow-soft backdrop-blur"
+            >
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                  <span class="text-white/60">当前位置</span>
+                  <span class="text-white/30">/</span>
+                  <span class="text-white/90">解决方案</span>
+                  <span class="text-white/30">/</span>
+                  <span class="text-white/90">通信互联</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="h-1.5 w-1.5 rounded-full bg-white/40"></span>
+                  <span>支持私有化部署与云边协同</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="py-20 sm:py-24">
+        <div class="mx-auto max-w-6xl px-5">
+          <div class="reveal mx-auto max-w-3xl text-center" data-reveal>
+            <p class="text-[12px] font-semibold tracking-[0.18em] text-primary-600">
+              VALUE PROPOSITION
+            </p>
+            <h2 class="mt-4 text-balance text-[30px] font-bold tracking-[-0.02em] text-zinc-900 sm:text-[36px]">
+              超越当今信息通信的需求
+            </h2>
+            <p class="mt-4 text-[14px] leading-7 text-zinc-600 sm:text-[15px]">
+              以城市级网络工程方法论构建连接底座，从规划、建设到运维形成闭环，让通信基础设施可度量、可演进。
+            </p>
+          </div>
+
+          <div class="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-3">
+            <article
+              class="reveal group rounded-2xl border border-zinc-100 bg-white p-8 text-center shadow-soft transition hover:-translate-y-1 hover:shadow-soft2"
+              data-reveal
+            >
+              <div
+                class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-primary-50 text-primary-600"
+              >
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 26 26"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M13 2.5C18.799 2.5 23.5 7.201 23.5 13C23.5 18.799 18.799 23.5 13 23.5C7.201 23.5 2.5 18.799 2.5 13C2.5 7.201 7.201 2.5 13 2.5Z"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                  />
+                  <path
+                    d="M7.2 14.8C9.1 11.9 11.3 10.3 13.7 9.9C16.2 9.5 18.2 10.6 19.7 13.2"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M8.5 7.8L10.8 8.7"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M17.5 18.2L15.2 17.3"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <h3 class="mt-6 text-[16px] font-bold text-zinc-900">
+                端到端可观测
+              </h3>
+              <p class="mt-3 text-[13px] leading-7 text-zinc-600">
+                统一指标、日志与链路追踪，实时掌控城域与园区网络健康，问题定位更快、影响更小。
+              </p>
+            </article>
+
+            <article
+              class="reveal group rounded-2xl border border-zinc-100 bg-white p-8 text-center shadow-soft transition hover:-translate-y-1 hover:shadow-soft2"
+              data-reveal
+            >
+              <div
+                class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-primary-50 text-primary-600"
+              >
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 26 26"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M8.3 7.7C8.3 5.1 10.4 3 13 3C15.6 3 17.7 5.1 17.7 7.7V11.4"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M6.2 11.4H19.8C21 11.4 22 12.4 22 13.6V20.2C22 21.4 21 22.4 19.8 22.4H6.2C5 22.4 4 21.4 4 20.2V13.6C4 12.4 5 11.4 6.2 11.4Z"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                  />
+                  <path
+                    d="M13 15.2V18.6"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <h3 class="mt-6 text-[16px] font-bold text-zinc-900">
+                安全可信连接
+              </h3>
+              <p class="mt-3 text-[13px] leading-7 text-zinc-600">
+                零信任与多租隔离并行，端到端加密与审计追溯，让关键业务网络更安全、更可控。
+              </p>
+            </article>
+
+            <article
+              class="reveal group rounded-2xl border border-zinc-100 bg-white p-8 text-center shadow-soft transition hover:-translate-y-1 hover:shadow-soft2"
+              data-reveal
+            >
+              <div
+                class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-primary-50 text-primary-600"
+              >
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 26 26"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M13 2.8L22.2 8.3V17.7L13 23.2L3.8 17.7V8.3L13 2.8Z"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                  />
+                  <path
+                    d="M13 7.9V18.1"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M8.2 13H17.8"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <h3 class="mt-6 text-[16px] font-bold text-zinc-900">
+                弹性多链路
+              </h3>
+              <p class="mt-3 text-[13px] leading-7 text-zinc-600">
+                微波点对点、光纤与卫星协同，支持容灾与路由自愈，保障业务连续性。
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="architecture" class="py-20 sm:py-24">
+        <div class="mx-auto max-w-6xl px-5">
+          <div class="reveal mx-auto max-w-3xl text-center" data-reveal>
+            <p class="text-[12px] font-semibold tracking-[0.18em] text-primary-600">
+              ARCHITECTURE
+            </p>
+            <h2 class="mt-4 text-balance text-[30px] font-bold tracking-[-0.02em] text-zinc-900 sm:text-[36px]">
+              通信互联解决方案
+            </h2>
+            <p class="mt-4 text-[14px] leading-7 text-zinc-600 sm:text-[15px]">
+              以“白模城市”表达干净的工程视角，通过标注点映射关键技术能力，便于你替换为真实 3D 资产或渲染图。
+            </p>
+          </div>
+
+          <div
+            class="reveal relative mt-12 overflow-hidden rounded-3xl border border-zinc-100 bg-white shadow-soft2"
+            data-reveal
+          >
+            <div
+              class="pointer-events-none absolute -left-24 -top-20 h-72 w-72 rounded-full bg-primary-500/10 blur-3xl"
+            ></div>
+            <div
+              class="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-cyan-400/15 blur-3xl"
+            ></div>
+            <div class="relative p-6 sm:p-10">
+              <div class="relative aspect-[16/9] w-full">
+                <svg
+                  viewBox="0 0 1200 675"
+                  class="h-full w-full"
+                  xmlns="http://www.w3.org/2000/svg"
+                  role="img"
+                  aria-label="城市通信互联白模示意图"
+                >
+                  <defs>
+                    <linearGradient id="g0" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#FFFFFF" />
+                      <stop offset="1" stop-color="#F2F5FA" />
+                    </linearGradient>
+                    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#FBFCFF" />
+                      <stop offset="1" stop-color="#E9EEF7" />
+                    </linearGradient>
+                  </defs>
+                  <rect x="0" y="0" width="1200" height="675" fill="url(#g0)" />
+                  <g opacity="0.65">
+                    <path
+                      d="M150 460L540 280L1000 420L610 600L150 460Z"
+                      fill="url(#g1)"
+                      stroke="#D7DEE9"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M540 280L540 420L610 600L610 460L540 280Z"
+                      fill="#F5F7FC"
+                      stroke="#D7DEE9"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M150 460L150 600L610 735L610 600L150 460Z"
+                      transform="translate(0,-135)"
+                      fill="#F8FAFF"
+                      stroke="#D7DEE9"
+                      stroke-width="2"
+                    />
+                  </g>
+                  <g>
+                    <g>
+                      <path
+                        d="M330 410L430 350L430 470L330 530L330 410Z"
+                        fill="#FFFFFF"
+                        stroke="#CFD8E6"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M430 350L510 390L510 510L430 470L430 350Z"
+                        fill="#F6F8FD"
+                        stroke="#CFD8E6"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M330 410L410 450L510 390L430 350L330 410Z"
+                        fill="#FBFCFF"
+                        stroke="#CFD8E6"
+                        stroke-width="2"
+                      />
+                    </g>
+                    <g>
+                      <path
+                        d="M610 350L700 300L700 440L610 490L610 350Z"
+                        fill="#FFFFFF"
+                        stroke="#CFD8E6"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M700 300L770 340L770 480L700 440L700 300Z"
+                        fill="#F6F8FD"
+                        stroke="#CFD8E6"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M610 350L680 390L770 340L700 300L610 350Z"
+                        fill="#FBFCFF"
+                        stroke="#CFD8E6"
+                        stroke-width="2"
+                      />
+                    </g>
+                    <g>
+                      <path
+                        d="M460 470L540 425L540 535L460 580L460 470Z"
+                        fill="#FFFFFF"
+                        stroke="#CFD8E6"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M540 425L605 460L605 570L540 535L540 425Z"
+                        fill="#F6F8FD"
+                        stroke="#CFD8E6"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M460 470L525 505L605 460L540 425L460 470Z"
+                        fill="#FBFCFF"
+                        stroke="#CFD8E6"
+                        stroke-width="2"
+                      />
+                    </g>
+                    <g opacity="0.9">
+                      <path
+                        d="M300 540L760 280"
+                        stroke="#E1E7F1"
+                        stroke-width="6"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M300 540L760 280"
+                        stroke="#BFD2FF"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M525 600L920 380"
+                        stroke="#E1E7F1"
+                        stroke-width="6"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M525 600L920 380"
+                        stroke="#BFD2FF"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M470 390L910 480"
+                        stroke="#E1E7F1"
+                        stroke-width="6"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M470 390L910 480"
+                        stroke="#BFD2FF"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </g>
+                  </g>
+                </svg>
+
+                <div class="absolute left-[23%] top-[54%]">
+                  <div
+                    class="pulse relative h-3 w-3 rounded-full bg-primary-500 shadow-[0_0_0_4px_rgba(0,85,255,0.12)]"
+                  ></div>
+                  <div class="mt-3 flex items-start gap-2">
+                    <div class="mt-1 h-[1px] w-10 bg-primary-400"></div>
+                    <div class="max-w-[220px]">
+                      <p class="text-[12px] font-semibold text-zinc-900">
+                        微波点对点
+                      </p>
+                      <p class="mt-1 text-[11px] leading-6 text-zinc-600">
+                        远距离回传与应急互联，支持高可靠与快速开通。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="absolute left-[64%] top-[41%]">
+                  <div
+                    class="pulse relative h-3 w-3 rounded-full bg-primary-500 shadow-[0_0_0_4px_rgba(0,85,255,0.12)]"
+                  ></div>
+                  <div class="mt-3 flex items-start gap-2">
+                    <div class="mt-1 h-[1px] w-12 bg-primary-400"></div>
+                    <div class="max-w-[240px]">
+                      <p class="text-[12px] font-semibold text-zinc-900">
+                        天线与边缘节点
+                      </p>
+                      <p class="mt-1 text-[11px] leading-6 text-zinc-600">
+                        多制式接入与就近调度，降低时延并提升链路弹性。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="absolute left-[46%] top-[73%]">
+                  <div
+                    class="pulse relative h-3 w-3 rounded-full bg-primary-500 shadow-[0_0_0_4px_rgba(0,85,255,0.12)]"
+                  ></div>
+                  <div class="mt-3 flex items-start gap-2">
+                    <div class="mt-1 h-[1px] w-10 bg-primary-400"></div>
+                    <div class="max-w-[240px]">
+                      <p class="text-[12px] font-semibold text-zinc-900">
+                        工业平台
+                      </p>
+                      <p class="mt-1 text-[11px] leading-6 text-zinc-600">
+                        标准化对接生产系统，数据面治理与安全审计可复用。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="absolute right-[7%] top-[63%] hidden sm:block">
+                  <div
+                    class="pulse relative h-3 w-3 rounded-full bg-primary-500 shadow-[0_0_0_4px_rgba(0,85,255,0.12)]"
+                  ></div>
+                  <div class="mt-3 flex items-start gap-2">
+                    <div class="mt-1 h-[1px] w-12 bg-primary-400"></div>
+                    <div class="max-w-[240px]">
+                      <p class="text-[12px] font-semibold text-zinc-900">
+                        统一运维中枢
+                      </p>
+                      <p class="mt-1 text-[11px] leading-6 text-zinc-600">
+                        告警闭环、容量评估与变更审计，保障网络连续可控。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-10 grid gap-4 sm:grid-cols-3">
+                <div class="rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
+                  <p class="text-[12px] font-semibold text-zinc-900">规划</p>
+                  <p class="mt-2 text-[12px] leading-6 text-zinc-600">
+                    覆盖分析、站址评估、频谱与承载设计。
+                  </p>
+                </div>
+                <div class="rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
+                  <p class="text-[12px] font-semibold text-zinc-900">建设</p>
+                  <p class="mt-2 text-[12px] leading-6 text-zinc-600">
+                    工程标准化交付，链路验收与安全基线一体化。
+                  </p>
+                </div>
+                <div class="rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
+                  <p class="text-[12px] font-semibold text-zinc-900">运营</p>
+                  <p class="mt-2 text-[12px] leading-6 text-zinc-600">
+                    可观测闭环与自愈策略，SLA 持续优化。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-16 sm:py-20">
+        <div class="mx-auto max-w-6xl px-5">
+          <div
+            class="reveal rounded-3xl bg-gradient-to-r from-primary-700 via-primary-500 to-cyan-500 px-6 py-12 text-white shadow-soft2 sm:px-10 sm:py-14"
+            data-reveal
+          >
+            <div class="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
+              <div>
+                <h2 class="text-balance text-[28px] font-bold tracking-[-0.02em]">
+                  联系我们，获取适配你业务的通信互联方案
+                </h2>
+                <p class="mt-3 text-[13px] leading-7 text-white/80 sm:text-[14px]">
+                  我们将基于场景（城域专网/园区工业/关键基础设施）给出网络架构、交付路径与运维策略建议。
+                </p>
+              </div>
+              <a
+                href="#contact"
+                class="inline-flex items-center justify-center rounded-full bg-white px-7 py-3 text-[13px] font-semibold text-primary-700 shadow-soft transition hover:bg-white/90"
+                >获取方案</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="news" class="py-20 sm:py-24">
+        <div class="mx-auto max-w-6xl px-5">
+          <div class="reveal flex flex-col justify-between gap-6 md:flex-row md:items-end" data-reveal>
+            <div class="max-w-2xl">
+              <p class="text-[12px] font-semibold tracking-[0.18em] text-primary-600">
+                INSIGHTS
+              </p>
+              <h2 class="mt-4 text-balance text-[30px] font-bold tracking-[-0.02em] text-zinc-900 sm:text-[36px]">
+                创新与技术动态
+              </h2>
+              <p class="mt-4 text-[14px] leading-7 text-zinc-600 sm:text-[15px]">
+                面向工程团队与业务管理者，分享网络架构、运维治理与行业实践的关键要点。
+              </p>
+            </div>
+            <a
+              href="#contact"
+              class="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-5 py-2.5 text-[13px] font-medium text-zinc-900 shadow-[0_1px_0_rgba(0,0,0,0.06)] transition hover:bg-zinc-50"
+            >
+              获取白皮书
+              <span class="text-primary-600" aria-hidden="true">→</span>
+            </a>
+          </div>
+
+          <div class="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-3">
+            <article class="reveal rounded-2xl border border-zinc-100 bg-white p-7 shadow-soft transition hover:shadow-soft2" data-reveal>
+              <p class="text-[11px] font-semibold text-primary-600">运维治理</p>
+              <h3 class="mt-3 text-[16px] font-bold text-zinc-900">
+                城域网络告警闭环：从“发现”到“自愈”
+              </h3>
+              <p class="mt-3 text-[13px] leading-7 text-zinc-600">
+                以可观测数据为核心，构建事件归一、根因分析与自动化处置的标准链路。
+              </p>
+              <div class="mt-5 text-[12px] text-zinc-500">2026-04-26</div>
+            </article>
+            <article class="reveal rounded-2xl border border-zinc-100 bg-white p-7 shadow-soft transition hover:shadow-soft2" data-reveal>
+              <p class="text-[11px] font-semibold text-primary-600">安全架构</p>
+              <h3 class="mt-3 text-[16px] font-bold text-zinc-900">
+                专网零信任落地：分区、身份与策略一致性
+              </h3>
+              <p class="mt-3 text-[13px] leading-7 text-zinc-600">
+                以身份为边界，结合微隔离与审计追踪，满足合规与横向移动防护。
+              </p>
+              <div class="mt-5 text-[12px] text-zinc-500">2026-04-18</div>
+            </article>
+            <article class="reveal rounded-2xl border border-zinc-100 bg-white p-7 shadow-soft transition hover:shadow-soft2" data-reveal>
+              <p class="text-[11px] font-semibold text-primary-600">建设交付</p>
+              <h3 class="mt-3 text-[16px] font-bold text-zinc-900">
+                微波链路工程实践：站址评估与容量规划要点
+              </h3>
+              <p class="mt-3 text-[13px] leading-7 text-zinc-600">
+                从视距、频谱到天线选型，快速串起微波点对点工程交付的关键检查项。
+              </p>
+              <div class="mt-5 text-[12px] text-zinc-500">2026-04-02</div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="py-20 sm:py-24">
+        <div class="mx-auto max-w-6xl px-5">
+          <div
+            class="reveal grid gap-8 rounded-3xl border border-zinc-100 bg-white p-6 shadow-soft2 sm:p-10 lg:grid-cols-[1fr_0.9fr]"
+            data-reveal
+          >
+            <div>
+              <p class="text-[12px] font-semibold tracking-[0.18em] text-primary-600">
+                CONTACT
+              </p>
+              <h2 class="mt-4 text-balance text-[28px] font-bold tracking-[-0.02em] text-zinc-900 sm:text-[34px]">
+                以科技连接未来
+              </h2>
+              <p class="mt-4 text-[14px] leading-7 text-zinc-600 sm:text-[15px]">
+                留下你的需求，我们将与方案团队对接：场景、范围、交付周期与合规要求。你也可以直接预约演示获取样例拓扑。
+              </p>
+              <div class="mt-8 grid gap-4 sm:grid-cols-2">
+                <div class="rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
+                  <p class="text-[12px] font-semibold text-zinc-900">企业邮箱</p>
+                  <p class="mt-2 text-[13px] text-zinc-600">bd@connect.example</p>
+                </div>
+                <div class="rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
+                  <p class="text-[12px] font-semibold text-zinc-900">服务热线</p>
+                  <p class="mt-2 text-[13px] text-zinc-600">400-000-0000</p>
+                </div>
+              </div>
+            </div>
+            <form class="rounded-2xl border border-zinc-100 bg-zinc-50 p-6">
+              <div class="grid gap-4">
+                <label class="grid gap-1.5">
+                  <span class="text-[12px] font-medium text-zinc-700">公司名称</span>
+                  <input
+                    class="h-11 rounded-xl border border-zinc-200 bg-white px-3 text-[13px] outline-none ring-primary-500/20 transition focus:border-primary-400 focus:ring-4"
+                    type="text"
+                    name="company"
+                    autocomplete="organization"
+                    placeholder="请输入"
+                  />
+                </label>
+                <label class="grid gap-1.5">
+                  <span class="text-[12px] font-medium text-zinc-700">联系人</span>
+                  <input
+                    class="h-11 rounded-xl border border-zinc-200 bg-white px-3 text-[13px] outline-none ring-primary-500/20 transition focus:border-primary-400 focus:ring-4"
+                    type="text"
+                    name="name"
+                    autocomplete="name"
+                    placeholder="请输入"
+                  />
+                </label>
+                <label class="grid gap-1.5">
+                  <span class="text-[12px] font-medium text-zinc-700">联系方式</span>
+                  <input
+                    class="h-11 rounded-xl border border-zinc-200 bg-white px-3 text-[13px] outline-none ring-primary-500/20 transition focus:border-primary-400 focus:ring-4"
+                    type="text"
+                    name="contact"
+                    autocomplete="tel"
+                    placeholder="电话/邮箱"
+                  />
+                </label>
+                <label class="grid gap-1.5">
+                  <span class="text-[12px] font-medium text-zinc-700">需求描述</span>
+                  <textarea
+                    class="min-h-[108px] resize-none rounded-xl border border-zinc-200 bg-white px-3 py-3 text-[13px] leading-6 outline-none ring-primary-500/20 transition focus:border-primary-400 focus:ring-4"
+                    name="message"
+                    placeholder="城域专网 / 园区工业 / 关键基础设施 ..."
+                  ></textarea>
+                </label>
+                <button
+                  type="button"
+                  class="mt-2 inline-flex h-11 items-center justify-center rounded-xl bg-primary-500 text-[13px] font-semibold text-white shadow-soft transition hover:bg-primary-600"
+                  data-submit
+                >
+                  提交咨询
+                </button>
+                <p class="text-[11px] leading-5 text-zinc-500">
+                  提交不会产生任何费用。信息仅用于方案沟通，不用于营销轰炸。
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-zinc-50">
+      <div class="mx-auto max-w-6xl px-5 py-14">
+        <div class="grid gap-10 lg:grid-cols-[1.1fr_2fr]">
+          <div>
+            <a href="#" class="inline-flex items-center gap-2 font-semibold">
+              <span
+                class="grid h-10 w-10 place-items-center rounded-xl bg-primary-500 text-white shadow-soft"
+                aria-hidden="true"
+                >C</span
+              >
+              <span class="text-[15px] text-zinc-900">智慧互联通信云</span>
+            </a>
+            <p class="mt-4 text-[13px] leading-7 text-zinc-600">
+              以工程化方法论打造城市级通信互联，提供规划建设、运维治理与安全合规的一体化能力。
+            </p>
+            <div class="mt-6 flex flex-wrap gap-3">
+              <a
+                href="#contact"
+                class="inline-flex items-center justify-center rounded-full bg-primary-500 px-5 py-2.5 text-[13px] font-semibold text-white shadow-soft transition hover:bg-primary-600"
+                >联系我们</a
+              >
+              <a
+                href="#architecture"
+                class="inline-flex items-center justify-center rounded-full border border-zinc-200 bg-white px-5 py-2.5 text-[13px] font-medium text-zinc-900 shadow-[0_1px_0_rgba(0,0,0,0.06)] transition hover:bg-zinc-100"
+                >查看架构</a
+              >
+            </div>
+          </div>
+
+          <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div>
+              <p class="text-[12px] font-semibold text-zinc-900">解决方案</p>
+              <div class="mt-4 grid gap-2 text-[12px] text-zinc-600">
+                <a class="hover:text-zinc-900" href="#solution">通信互联</a>
+                <a class="hover:text-zinc-900" href="#architecture">城域专网</a>
+                <a class="hover:text-zinc-900" href="#features">园区工业</a>
+                <a class="hover:text-zinc-900" href="#contact">应急互联</a>
+              </div>
+            </div>
+            <div>
+              <p class="text-[12px] font-semibold text-zinc-900">创新与技术</p>
+              <div class="mt-4 grid gap-2 text-[12px] text-zinc-600">
+                <a class="hover:text-zinc-900" href="#news">白皮书</a>
+                <a class="hover:text-zinc-900" href="#news">参考架构</a>
+                <a class="hover:text-zinc-900" href="#news">案例实践</a>
+                <a class="hover:text-zinc-900" href="#news">技术博客</a>
+              </div>
+            </div>
+            <div>
+              <p class="text-[12px] font-semibold text-zinc-900">新闻资讯</p>
+              <div class="mt-4 grid gap-2 text-[12px] text-zinc-600">
+                <a class="hover:text-zinc-900" href="#news">公司动态</a>
+                <a class="hover:text-zinc-900" href="#news">行业洞察</a>
+                <a class="hover:text-zinc-900" href="#news">媒体报道</a>
+                <a class="hover:text-zinc-900" href="#news">活动公告</a>
+              </div>
+            </div>
+            <div>
+              <p class="text-[12px] font-semibold text-zinc-900">关于我们</p>
+              <div class="mt-4 grid gap-2 text-[12px] text-zinc-600">
+                <a class="hover:text-zinc-900" href="#contact">公司介绍</a>
+                <a class="hover:text-zinc-900" href="#contact">资质合规</a>
+                <a class="hover:text-zinc-900" href="#contact">合作伙伴</a>
+                <a class="hover:text-zinc-900" href="#contact">加入我们</a>
+              </div>
+            </div>
+            <div>
+              <p class="text-[12px] font-semibold text-zinc-900">支持</p>
+              <div class="mt-4 grid gap-2 text-[12px] text-zinc-600">
+                <a class="hover:text-zinc-900" href="#contact">文档中心</a>
+                <a class="hover:text-zinc-900" href="#contact">服务条款</a>
+                <a class="hover:text-zinc-900" href="#contact">隐私政策</a>
+                <a class="hover:text-zinc-900" href="#contact">安全中心</a>
+              </div>
+            </div>
+            <div>
+              <p class="text-[12px] font-semibold text-zinc-900">联系我们</p>
+              <div class="mt-4 grid gap-2 text-[12px] text-zinc-600">
+                <div>地址：某某高新区 · 未来大道 88 号</div>
+                <div>邮箱：bd@connect.example</div>
+                <div>电话：400-000-0000</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-12 h-px bg-gradient-to-r from-transparent via-zinc-200 to-transparent"></div>
+        <div class="mt-6 flex flex-col gap-3 text-[11px] text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
+          <div>© 2026 智慧互联通信云 · All rights reserved.</div>
+          <div>
+            <a class="hover:text-zinc-700" href="#">ICP备 00000000 号</a>
+            <span class="mx-2 text-zinc-300">|</span>
+            <a class="hover:text-zinc-700" href="#">公网安备 00000000000000 号</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <div
+      class="pointer-events-none fixed inset-x-0 bottom-6 z-50 mx-auto flex max-w-6xl justify-end px-5"
+    >
+      <a
+        href="#solution"
+        class="pointer-events-auto inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-zinc-200 bg-white text-zinc-700 shadow-soft transition hover:bg-zinc-50"
+        aria-label="返回顶部"
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 18 18"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M9 4L4.8 8.2"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+          />
+          <path
+            d="M9 4L13.2 8.2"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+          />
+          <path
+            d="M9 4V14"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+          />
+        </svg>
+      </a>
+    </div>
+
+    <script>
+      const menuButton = document.querySelector("[data-menu]")
+      const panel = document.querySelector("[data-menu-panel]")
+      if (menuButton && panel) {
+        menuButton.addEventListener("click", () => {
+          panel.classList.toggle("hidden")
+        })
+        panel.addEventListener("click", (e) => {
+          if (e.target.closest("a")) panel.classList.add("hidden")
+        })
+      }
+
+      const revealTargets = Array.from(document.querySelectorAll("[data-reveal]"))
+      const io =
+        "IntersectionObserver" in window
+          ? new IntersectionObserver(
+              (entries) => {
+                entries.forEach((entry) => {
+                  if (entry.isIntersecting) {
+                    entry.target.classList.add("is-in")
+                    io.unobserve(entry.target)
+                  }
+                })
+              },
+              { threshold: 0.12 }
+            )
+          : null
+
+      revealTargets.forEach((el, idx) => {
+        el.classList.add("reveal")
+        el.style.transitionDelay = `${Math.min(idx * 70, 240)}ms`
+        if (io) io.observe(el)
+        else el.classList.add("is-in")
+      })
+
+      const submitBtn = document.querySelector("[data-submit]")
+      if (submitBtn) {
+        submitBtn.addEventListener("click", () => {
+          submitBtn.textContent = "已收到，我们将尽快联系你"
+          submitBtn.setAttribute("disabled", "true")
+          submitBtn.classList.add("opacity-80", "cursor-not-allowed")
+        })
+      }
+    </script>
+  </body>
+</html>
